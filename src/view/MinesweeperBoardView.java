@@ -51,7 +51,7 @@ public class MinesweeperBoardView {
         return hideBoard;
     }
 
-    public String getFailureBoard(Point minePoint) {
+    public String getShowBoard(Point minePoint) {
         int[][] matrix = minesweeperBoard.getMatrix();
         int rowSize = minesweeperBoard.getDifficulty().getRowSize();
         int colSize = minesweeperBoard.getDifficulty().getColumnSize();
