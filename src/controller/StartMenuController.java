@@ -1,13 +1,14 @@
 package controller;
 
+import model.DifficultyType;
+
 import java.util.Scanner;
 
 public class StartMenuController extends AbstractController {
 
     private final Scanner sc;
-    private final GameController gameController;
 
-    public void selectMenu(boolean showMenu) {
+    public MenuType selectMenu(boolean showMenu) {
         MenuType[] menuTypes = MenuType.values();
         if (showMenu) {
             System.out.println("메뉴 리스트");
@@ -17,20 +18,21 @@ public class StartMenuController extends AbstractController {
         }
 
         System.out.print("메뉴 선택: ");
-        MenuType menuType = (MenuType) validateInput(sc, menuTypes);
 
-        switch (menuType) {
-            case START_GAME:
-                gameController.startGame();
-                break;
-            case EXPLAIN_RULE:
-                explainRole();
-                selectMenu(false);
-                break;
-            case QUIT:
-                exit();
-                break;
+        return (MenuType) validateInput(sc, menuTypes);
+    }
+
+    public DifficultyType selectDifficultyType() {
+        System.out.println("난이도를 선택해 주세요.");
+        DifficultyType[] difficultyTypes = DifficultyType.values();
+        for (int i = 0; i < difficultyTypes.length; i++) {
+            System.out.println(i + ". " + difficultyTypes[i].toString());
         }
+
+        DifficultyType resultDifficulty = (DifficultyType) validateInput(sc, difficultyTypes);
+        clearConsole();
+
+        return resultDifficulty;
     }
 
     public void explainRole() {
@@ -43,6 +45,5 @@ public class StartMenuController extends AbstractController {
 
     public StartMenuController(Scanner sc) {
         this.sc = sc;
-        this.gameController = new GameController(sc);
     }
 }

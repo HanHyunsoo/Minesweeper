@@ -3,7 +3,7 @@ package controller;
 import java.util.Scanner;
 
 public abstract class AbstractController {
-    Object validateInput(Scanner sc, Object[] objects) {
+    protected Object validateInput(Scanner sc, Object[] objects) {
         Object resultType;
 
         while (true) {
@@ -19,5 +19,10 @@ public abstract class AbstractController {
         }
 
         return resultType;
+    }
+
+    protected void clearConsole() {
+        System.out.print("\033\143");
+        System.out.flush();
     }
 }

@@ -1,7 +1,6 @@
 package controller;
 
 import model.CellType;
-import model.DifficultyType;
 import model.MinesweeperBoard;
 import model.Point;
 import view.MinesweeperBoardView;
@@ -11,30 +10,13 @@ import java.util.Scanner;
 public class GameController extends AbstractController {
 
     private final Scanner sc;
-    private MinesweeperBoard minesweeperBoard;
-    private MinesweeperBoardView minesweeperBoardView;
+    private final MinesweeperBoard minesweeperBoard;
+    private final MinesweeperBoardView minesweeperBoardView;
     private Point currentPoint;
     private int pointCount = 0;
     private String inputErrorMessage = null;
 
-    public void selectDifficultyType() {
-        System.out.println("난이도를 선택해 주세요.");
-        DifficultyType[] difficultyTypes = DifficultyType.values();
-        for (int i = 0; i < difficultyTypes.length; i++) {
-            System.out.println(i + ". " + difficultyTypes[i].toString());
-        }
-
-        DifficultyType resultDifficulty = (DifficultyType) validateInput(sc, difficultyTypes);
-
-        this.minesweeperBoard = new MinesweeperBoard(resultDifficulty);
-        this.minesweeperBoardView = new MinesweeperBoardView(minesweeperBoard);
-        clearConsole();
-    }
-
     public void startGame() {
-        if (minesweeperBoard == null) {
-            selectDifficultyType();
-        }
         System.out.printf("게임을 시작합니다.\n게임 난이도 : %s\n", minesweeperBoard.getDifficulty().toString());
         System.out.println("확인하고 싶은 칸의 좌표(y, x)를 입력해주세요.(예: 4 2)");
         long startTime = System.currentTimeMillis();
@@ -43,8 +25,8 @@ public class GameController extends AbstractController {
         while (minesweeperBoard.getVisitedCount() != minesweeperBoard.getTotalMineLess()) {
             clearConsole();
             System.out.println(minesweeperBoardView.getHideBoard());
-            System.out.println();
-            System.out.println(minesweeperBoardView.getShowBoard(new Point(0, 0)));
+//            System.out.println();
+//            System.out.println(minesweeperBoardView.getShowBoard(new Point(0, 0)));
 
             if (inputErrorMessage != null) {
                 System.out.println(inputErrorMessage);
@@ -73,17 +55,14 @@ public class GameController extends AbstractController {
         System.out.printf("당신은 %d초 동안 %d만큼 클릭해서 게임을 마무리했습니다.\n", time, getPointCount());
     }
 
-    private void clearConsole() {
-        System.out.print("\033\143");
-        System.out.flush();
-    }
-
     private long millisecondToSecond(long ms) {
         return ms / 1000;
     }
 
-    public GameController(Scanner sc) {
+    public GameController(Scanner sc, MinesweeperBoard minesweeperBoard) {
         this.sc = sc;
+        this.minesweeperBoard = minesweeperBoard;
+        this.minesweeperBoardView = new MinesweeperBoardView(minesweeperBoard);
     }
 
     public Point inputPoint() {
