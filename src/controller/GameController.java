@@ -15,6 +15,7 @@ public class GameController extends AbstractController {
     private MinesweeperBoardView minesweeperBoardView;
     private Point currentPoint;
     private int pointCount = 0;
+    private String inputErrorMessage = null;
 
     public void selectDifficultyType() {
         System.out.println("난이도를 선택해 주세요.");
@@ -27,6 +28,7 @@ public class GameController extends AbstractController {
 
         this.minesweeperBoard = new MinesweeperBoard(resultDifficulty);
         this.minesweeperBoardView = new MinesweeperBoardView(minesweeperBoard);
+        clearConsole();
     }
 
     public void startGame() {
@@ -41,29 +43,33 @@ public class GameController extends AbstractController {
         while (minesweeperBoard.getVisitedCount() != minesweeperBoard.getTotalMineLess()) {
             clearConsole();
             System.out.println(minesweeperBoardView.getHideBoard());
+            System.out.println();
+            System.out.println(minesweeperBoardView.getShowBoard(new Point(0, 0)));
 
+            if (inputErrorMessage != null) {
+                System.out.println(inputErrorMessage);
+                inputErrorMessage = null;
+            }
             currentPoint = inputPoint();
-            pointCount++;
+            if (currentPoint == null) continue;
 
             if (currentPoint.getCellType(minesweeperBoard) == CellType.MINE) {
-                endTime = System.currentTimeMillis();
-                endGame(millisecondToSecond(endTime - startTime));
                 break;
-            } else if (currentPoint.isVisited(minesweeperBoard)) {
-                System.out.println("이미 확인된 좌표입니다.");
-                continue;
             }
 
             minesweeperBoard.bfs(currentPoint);
         }
 
         endTime = System.currentTimeMillis();
-        endGame(millisecondToSecond(endTime - startTime));
+        long totalGameSec = millisecondToSecond(endTime - startTime);
+        endGame(totalGameSec, minesweeperBoard.getVisitedCount() == minesweeperBoard.getTotalMineLess());
+
     }
 
-    public void endGame(long time) {
+    public void endGame(long time, boolean isWin) {
         clearConsole();
         System.out.println(minesweeperBoardView.getShowBoard(currentPoint));
+        System.out.println((isWin) ? "YOU WIN!" : "GAME OVER");
         System.out.printf("당신은 %d초 동안 %d만큼 클릭해서 게임을 마무리했습니다.\n", time, getPointCount());
     }
 
@@ -81,23 +87,24 @@ public class GameController extends AbstractController {
     }
 
     public Point inputPoint() {
-        Point resultPoint;
+        Point resultPoint = null;
 
-        while (true) {
-            try {
-                System.out.print("좌표 입력(y x): ");
-                resultPoint = new Point(Integer.parseInt(sc.next()), Integer.parseInt(sc.next()));
-                if (resultPoint.isOutBoardRange(getMinesweeperBoard())) {
-                    throw new ArrayIndexOutOfBoundsException();
-                }
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("(오류) - 숫자로만 입력해 주세요.");
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("(오류) - 지정된 범위 내 좌표만 입력해주세요.");
+        try {
+            System.out.print("좌표 입력(y x): ");
+            resultPoint = new Point(Integer.parseInt(sc.next()), Integer.parseInt(sc.next()));
+            if (resultPoint.isOutBoardRange(getMinesweeperBoard())) {
+                throw new ArrayIndexOutOfBoundsException();
+            } else if (resultPoint.isVisited(getMinesweeperBoard())) {
+                inputErrorMessage = "이미 확인된 좌표입니다.";
             }
+            pointCount++;
+        } catch (NumberFormatException e) {
+            inputErrorMessage = "(오류) - 숫자로만 입력해 주세요.";
+        } catch (ArrayIndexOutOfBoundsException e) {
+            inputErrorMessage = "(오류) - 지정된 범위 내 좌표만 입력해주세요.";
         }
-        return resultPoint;
+
+        return (inputErrorMessage == null) ? resultPoint : null;
     }
 
     public MinesweeperBoard getMinesweeperBoard() {
