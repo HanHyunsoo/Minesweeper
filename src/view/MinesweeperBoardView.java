@@ -91,7 +91,7 @@ public class MinesweeperBoardView {
     }
 
     private void setTableTitle(int y, int x) {
-        sb.append(WHITE_BACKGROUND);
+        sb.append(PURPLE_BACKGROUND);
 
         if (y == -1 && x == -1) {
             sb.append("y\\x").append(' ');
