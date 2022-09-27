@@ -10,6 +10,7 @@ import view.MinesweeperBoardView;
 import view.button.CellButton;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class GameController {
     private final EndGameView endGameView;
     private long startTime;
     private int clickCount;
+
+    private final String os = System.getProperty("os.name").toLowerCase();
 
     public GameController(MinesweeperBoard minesweeperBoard, MinesweeperBoardView minesweeperBoardView) {
         this.minesweeperBoard = minesweeperBoard;
@@ -57,6 +60,7 @@ public class GameController {
                 setTextAndColor(cellButton, minesweeperBoard.getMatrix()[y][x]);
             }
             cellButton.setOpaque(true);
+            cellButton.repaint();
         }
 
         minesweeperBoardView.repaint();
@@ -131,8 +135,18 @@ public class GameController {
             textField.setDisabledTextColor(Color.BLUE);
         }
 
-        textField.setBackground(new Color(0, 0, 0, 0));
+        if (os.contains("win")) {
+            textField.setBackground(new Color(128, 128, 128, 255));
+            textField.setBorder(new LineBorder(new Color(153, 153, 153)));
+        } else {
+            textField.setBackground(new Color(0, 0, 0, 0));
+        }
+
+        textField.setEditable(false);
+        textField.setDragEnabled(false);
         textField.setEnabled(false);
+
+        textField.repaint();
 
         cellButton.add(textField);
     }
