@@ -3,7 +3,8 @@ package model;
 public enum DifficultyType {
     EASY(9, 9, 10, "초급"),
     NORMAL(16, 16, 40, "중급"),
-    HARD(30, 16, 99, "고급");
+    HARD(16, 30, 99, "고급"),
+    HELL(30, 30, 150, "지옥");
 
     private int rowSize;
     private int columnSize;

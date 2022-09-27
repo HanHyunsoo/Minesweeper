@@ -1,11 +1,6 @@
 package model;
 
-import view.MinesweeperBoardView;
-
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 
 import static common.Constant.*;
 
@@ -27,8 +22,10 @@ public class MinesweeperBoard {
         this.totalMineLess = difficulty.getRowSize() * difficulty.getColumnSize() - difficulty.getMineSize();
     }
 
-    public void bfs(Point point) {
+    public List<Point> bfs(Point point) {
+
         Queue<Point> pointQueue = new LinkedList<>();
+        List<Point> resultVisitedPoint = new ArrayList<>();
         pointQueue.add(point);
 
         while (!pointQueue.isEmpty()) {
@@ -37,6 +34,7 @@ public class MinesweeperBoard {
 
             visited[pollPoint.getY()][pollPoint.getX()] = 1;
             visitedCount++;
+            resultVisitedPoint.add(pollPoint);
 
             if (pollPoint.getCellType(this) == CellType.NUMBER) continue;
 
@@ -49,6 +47,8 @@ public class MinesweeperBoard {
                 }
             }
         }
+
+        return resultVisitedPoint;
     }
 
     private void setRandomMines() {
